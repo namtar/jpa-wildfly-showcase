@@ -1,6 +1,7 @@
 package de.namtar.test;
 
 import de.namtar.persistence.PersonEntity;
+import de.namtar.persistence.PersonEntity_;
 import de.namtar.persistence.PersonRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 /**
  * Test for the {@link de.namtar.persistence.PersonEntity}.
@@ -30,7 +32,7 @@ public class PersonEntityTest {
     public static WebArchive createArchive() {
 
         final WebArchive archive = ShrinkWrap.create(WebArchive.class, "test.war");
-        archive.addClasses(PersonEntity.class, PersonRepository.class);
+        archive.addClasses(PersonEntity.class, PersonRepository.class, PersonEntity_.class);
         archive.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml");
         archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         // Deploy our test datasource
@@ -52,5 +54,15 @@ public class PersonEntityTest {
         Assert.assertNotNull(createdEntity.id);
         Assert.assertNotNull(createdEntity.creationDate);
 
+        // detach all entities
+        personRepository.getEm().clear();
+
+        // found entity is a new object. Debug to see the object id difference between foundEntity and createdEntity
+        final PersonEntity foundEntity = personRepository.findPersonByName("TestName");
+        Assert.assertNotNull(foundEntity);
+        Assert.assertNotNull(createdEntity.id);
+        Assert.assertNotNull(createdEntity.creationDate);
+        Assert.assertEquals("TestName", createdEntity.name);
+        Assert.assertEquals("FirstName", createdEntity.firstName);
     }
 }
