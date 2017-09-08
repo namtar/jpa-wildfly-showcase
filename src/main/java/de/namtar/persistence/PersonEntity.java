@@ -11,14 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "person")
 @Access(AccessType.FIELD)
-public class PersonEntity {
-
-    @Id
-    @GeneratedValue
-    public Integer id;
-
-    @Version
-    public Integer version;
+public class PersonEntity extends AbstractIdEntity {
 
     @Column(name = "creation_date")
     public LocalDateTime creationDate;

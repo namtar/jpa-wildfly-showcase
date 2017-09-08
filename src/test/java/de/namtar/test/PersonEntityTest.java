@@ -1,5 +1,7 @@
 package de.namtar.test;
 
+import de.namtar.persistence.AbstractIdEntity;
+import de.namtar.persistence.AbstractIdEntity_;
 import de.namtar.persistence.PersonEntity;
 import de.namtar.persistence.PersonEntity_;
 import de.namtar.persistence.PersonRepository;
@@ -14,7 +16,6 @@ import org.junit.runner.RunWith;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 /**
  * Test for the {@link de.namtar.persistence.PersonEntity}.
@@ -32,7 +33,7 @@ public class PersonEntityTest {
     public static WebArchive createArchive() {
 
         final WebArchive archive = ShrinkWrap.create(WebArchive.class, "test.war");
-        archive.addClasses(PersonEntity.class, PersonRepository.class, PersonEntity_.class);
+        archive.addClasses(PersonEntity.class, PersonRepository.class, PersonEntity_.class, AbstractIdEntity.class, AbstractIdEntity_.class);
         archive.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml");
         archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         // Deploy our test datasource
